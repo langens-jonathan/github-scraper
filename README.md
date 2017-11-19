@@ -5,12 +5,12 @@ This script is intended to quickly scrape github projects.
 
 ## Usage
 ```
-python scrape-github.py [technology]
+python scrape-github.py [technology-list]
 ```
 Here the following arguments are *needed*:
-* technology: the technology you are trying to scrape
+* technology list: the technologies you are trying to scrape, all technologies in this list should be escaped
 
-This will leave you with a file that has the technology's name and in there you will find all github projects that are returned.
+This will leave you with a file per technology that has the technology's name and in there you will find all github projects that are returned.
 
 ## Restrictions
 Github will restrict all calls to 1000 repositories. The scraper uses 4 metrics to search both in descending and ascending order:
@@ -29,3 +29,14 @@ It is also worth to note that the resulting list is not a set, entries can appea
 python scrape-github.py hadoop
 ```
 This will leave you with a 'hadoop' file that has 8000 entries.
+
+```
+python scrape-github.py hadoop file+system spark apache+flink data-mining
+```
+This will leave you with the following files:
+* hadoop
+* file+system
+* spark
+* apache+flink
+* data-mining
+Each of which will contain links to projects that have a link to that technology.
