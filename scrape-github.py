@@ -31,7 +31,7 @@ class GithubSearchParser(HTMLParser):
     next_page = ""
 
     def mine_tech(self, tech):
-        parser.file = open(tech, 'a+')
+        self.file = open(tech, 'a+')
 
         for search_addon in self.GITHUB_SEARCH_ADDONS:
             self.mine_url(self.GITHUB_BASE_URL + search_addon + tech)
@@ -72,6 +72,7 @@ class GithubSearchParser(HTMLParser):
 parser = GithubSearchParser()
 
 for arg in sys.argv:
-    if(arg != 'scrape-github'):
-        tech = sys.argv[1]
+    if(arg != 'scrape-github.py'):
+        tech = arg# sys.argv[1]
+        print(tech)
         parser.mine_tech(tech)
