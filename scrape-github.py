@@ -19,20 +19,16 @@ class GithubSearchParser(HTMLParser):
         GITHUB_SEARCH_URL_ADDON,
         GITHUB_SEARCH_URL_ADDON_ASC,
         GITHUB_SEARCH_URL_ADDON_STARS,
-        # GITHUB_SEARCH_URL_ADDON_FSTARS,
         GITHUB_SEARCH_URL_ADDON_FORKS,
-        # GITHUB_SEARCH_URL_ADDON_FFORKS,
-        GITHUB_SEARCH_URL_ADDON_UPDATED,
-        # GITHUB_SEARCH_URL_ADDON_FUPDATED
+        GITHUB_SEARCH_URL_ADDON_UPDATED
     ]
 
-    TIMEOUT = 30
+    TIMEOUT = 3
     in_link_block = False
     next_page = ""
 
     def mine_tech(self, tech):
-        self.file = open(tech, 'a+')
-
+        self.ofile = open(tech, 'a+')
         for search_addon in self.GITHUB_SEARCH_ADDONS:
             self.mine_url(self.GITHUB_BASE_URL + search_addon + tech)
             while(self.next_page != ""):
@@ -46,8 +42,9 @@ class GithubSearchParser(HTMLParser):
             self.feed(str(urllib.request.urlopen(url).read()))
         except urllib.error.HTTPError as err:
             print("[!] got an error: " + str(err))
-            time.sleep(3000)
-            self.feed(str(urllib.request.urlopen(url).read()))
+            time.sleep(250)
+            # self.feed(str(urllib.request.urlopen(url).read()))
+            self.mine_url(url)
 
     def handle_starttag(self, tag, attrs):
         if(self.in_link_block == True):
@@ -55,7 +52,7 @@ class GithubSearchParser(HTMLParser):
                 for attr in attrs:
                     if(attr[0] == "href"):
                         print("[->] link found: " + attr[1])
-                        self.file.write(attr[1] + "\n")
+                        self.ofile.write(attr[1] + "\n")
                         self.in_link_block = False
         for attr in attrs:
             if(attr[1] == 'repo-list-item d-flex flex-justify-start py-4 public source'):
@@ -65,14 +62,8 @@ class GithubSearchParser(HTMLParser):
                     if(a[0] == 'href'):
                         self.next_page = a[1]
 
-# tech = sys.argv[1]
-# parser = GithubSearchParser()
-# parser.mine_tech(tech)
-# print(parser.next_page)
 parser = GithubSearchParser()
 
 for arg in sys.argv:
     if(arg != 'scrape-github.py'):
-        tech = arg# sys.argv[1]
-        print(tech)
-        parser.mine_tech(tech)
+        parser.mine_tech(arg)
